@@ -58,8 +58,8 @@ jobs:
       - name: Publish portable ZIP
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: portable-v2
-          name: ENIGMA-X Portable v2
+          tag_name: portable-v3
+          name: ENIGMA-X Portable v3
           make_latest: true
           overwrite_files: true
           files: ENIGMA-X-Portable.zip
