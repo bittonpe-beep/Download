@@ -35,6 +35,7 @@ jobs:
           python -c "import tkinter; print('Tkinter check passed')"
           robocopy $source $pythonDir /E /XD __pycache__ /XF *.pyc
           if ($LASTEXITCODE -ge 8) { throw "Python copy failed: $LASTEXITCODE" }
+          $global:LASTEXITCODE = 0
           Copy-Item 'ENIGMA-X.pyw' $root
           @'
           @echo off
