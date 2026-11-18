@@ -404,9 +404,13 @@ class Net:
                 time.sleep(min(backoff, 15))
                 backoff *= 2
 
-    def send(self, to, morse, wpm, mk):
+    def send(self, to, morse, wpm, mk, key_code):
         def run():
-            body = json.dumps({"to": to, "morse": morse, "wpm": wpm, "mk": mk}).encode()
+            # Include the exact machine settings used for this message so the
+            # recipient can decode it even when accepting a brand-new contact.
+            body = json.dumps({
+                "to": to, "morse": morse, "wpm": wpm, "mk": mk, "key": key_code
+            }).encode()
             hdr = dict(self._headers(), **{"Content-Type": "application/json"})
             try:
                 req = urllib.request.Request(
@@ -777,11 +781,20 @@ class MessengerTab(tk.Frame):
         c = self.contacts.get(code, {})
         note = ""
         try:
-            if c.get("key"):
+            # New messages carry the exact key used by the sender. Prefer it
+            # over a saved contact key so key changes cannot cause gibberish.
+            message_key = m.get("key")
+            if message_key:
+                cfg = decode_key(message_key)
+                c["key"] = message_key
+                self.contacts[code] = c
+                save_json("contacts.json", self.contacts)
+            elif c.get("key"):
                 cfg = decode_key(c["key"])
             else:
+                # Backward compatibility with messages from older app versions.
                 cfg = self.app.collect()
-                note = "(decoded with your current machine setup)"
+                note = "(legacy message: used your current machine setup)"
             plain = run_cfg(cfg, cipher, m.get("mk"))
         except Exception:
             plain, note = "[could not decrypt - check you share the same key code]", "(cipher: " + cipher + ")"
@@ -803,10 +816,14 @@ class MessengerTab(tk.Frame):
             return
         code = next(iter(self.pending))
         msgs = self.pending.pop(code)
-        try:
-            key = encode_key(self.app.collect())
-        except ValueError:
-            key = None
+        # Save the sender's actual message key when available. Do not guess
+        # by saving the recipient's current machine settings.
+        key = next((m.get("key") for m in msgs if m.get("key")), None)
+        if key:
+            try:
+                decode_key(key)  # reject malformed key codes
+            except Exception:
+                key = None
         self.contacts[code] = {"name": show_code(code), "key": key, "blocked": False}
         self.refresh_contacts()
         for m in msgs:
@@ -843,7 +860,7 @@ class MessengerTab(tk.Frame):
             self.app.status("Nothing Morse can carry in that message.", err=True)
             return
         wpm = self.wpm.get()
-        self.app.net.send(to, morse, wpm, mk)
+        self.app.net.send(to, morse, wpm, mk, encode_key(cfg))
         self.say("you \u2192 " + self.name_of(to), plain, morse, "out",
                  "" if c and c.get("key") else "(used your current machine setup)")
         self.compose.delete("1.0", "end")
