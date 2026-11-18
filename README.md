@@ -1,8 +1,8 @@
 # ENIGMA-X Download
 
-Download the ENIGMA-X v2 desktop app from the [download page](https://bittonpe-beep.github.io/Download/) or directly below.
+**[Open the ENIGMA-X download site](https://enigma-x-download.onrender.com)**
 
-**[⬇ Download ENIGMA-X.pyw](./ENIGMA-X.pyw)**
+You can also [download ENIGMA-X.pyw directly](./ENIGMA-X.pyw).
 
 ## Requirements
 - Python 3
