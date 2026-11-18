@@ -1,0 +1,64 @@
+name: Build portable ENIGMA-X for Windows
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/build-portable.yml'
+      - 'ENIGMA-X.pyw'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python with Tkinter
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: 'x64'
+
+      - name: Assemble self-contained folder
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $root = Join-Path $env:GITHUB_WORKSPACE 'portable'
+          $pythonDir = Join-Path $root 'Python'
+          New-Item -ItemType Directory -Force -Path $pythonDir | Out-Null
+          $source = (python -c "import sys; print(sys.prefix)").Trim()
+          python -c "import tkinter; print('Tkinter check passed')"
+          robocopy $source $pythonDir /E /XD __pycache__ /XF *.pyc
+          if ($LASTEXITCODE -ge 8) { throw "Python copy failed: $LASTEXITCODE" }
+          Copy-Item 'ENIGMA-X.pyw' $root
+          @'
+          @echo off
+          cd /d "%~dp0"
+          start "" "%~dp0Python\pythonw.exe" "%~dp0ENIGMA-X.pyw"
+          '@ | Set-Content -Encoding ASCII (Join-Path $root 'START-ENIGMA-X.bat')
+          @'
+          ENIGMA-X Portable for Windows (64-bit)
+
+          1. Extract this ZIP to a folder.
+          2. Double-click START-ENIGMA-X.bat.
+          3. No separate Python or Tkinter installation is required.
+
+          This package includes a portable Python runtime and its Tcl/Tk files.
+          The messenger relay still requires a separately running enigma_relay.py server.
+          Historical Enigma ciphers are for learning and experimentation, not real security.
+          '@ | Set-Content -Encoding UTF8 (Join-Path $root 'READ-ME-FIRST.txt')
+          Compress-Archive -Path (Join-Path $root '*') -DestinationPath (Join-Path $env:GITHUB_WORKSPACE 'ENIGMA-X-Portable.zip') -Force
+
+      - name: Publish portable ZIP
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: portable-v2
+          name: ENIGMA-X Portable v2
+          make_latest: true
+          overwrite_files: true
+          files: ENIGMA-X-Portable.zip
