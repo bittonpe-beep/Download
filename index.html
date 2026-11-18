@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b0e14">
+<title>ENIGMA-X — Download</title>
+<style>
+:root{color-scheme:dark;--bg:#080b12;--panel:#111827;--line:#263449;--cyan:#39d0ff;--amber:#ffb454;--muted:#9aa8bb}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% 0%,#15243a 0%,#080b12 58%);color:#eaf2ff;font:16px/1.6 Inter,Segoe UI,Arial,sans-serif;display:grid;place-items:center;padding:28px}
+main{width:min(760px,100%);border:1px solid var(--line);border-radius:22px;background:linear-gradient(145deg,#131d2c,#0d121c 70%);box-shadow:0 24px 90px #0009;padding:clamp(26px,6vw,56px)}
+.eyebrow{color:var(--cyan);font:700 12px/1.4 Consolas,monospace;letter-spacing:.22em;text-transform:uppercase}
+h1{font-size:clamp(38px,8vw,68px);line-height:1;margin:16px 0 14px;letter-spacing:-.055em}
+h1 span{color:var(--cyan)}p{color:var(--muted);max-width:58ch}
+.panel{margin:30px 0 22px;padding:20px;border:1px solid var(--line);border-radius:15px;background:#080d16}
+.file{display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap}
+.filename{font:700 15px Consolas,monospace;color:#fff}.meta{font:12px Consolas,monospace;color:var(--muted);margin-top:5px}
+a.download{display:inline-flex;align-items:center;justify-content:center;gap:10px;margin-top:20px;padding:15px 23px;border-radius:10px;background:var(--cyan);color:#06101a;text-decoration:none;font-weight:800;letter-spacing:.04em;box-shadow:0 8px 28px #39d0ff30;transition:transform .18s,filter .18s}
+a.download:hover{transform:translateY(-2px);filter:brightness(1.12)}a.download:focus-visible{outline:3px solid white;outline-offset:4px}
+h2{font-size:17px;margin:28px 0 8px}ul{color:var(--muted);padding-left:21px}li{margin:5px 0}.note{font-size:13px;border-left:3px solid var(--amber);padding:9px 13px;background:#ffb4540c;color:#c6b69d;border-radius:0 8px 8px 0}
+footer{margin-top:30px;color:#68778d;font:11px Consolas,monospace;letter-spacing:.08em}
+</style>
+</head>
+<body>
+<main>
+<div class="eyebrow">Desktop software · Version 2</div>
+<h1>ENIGMA<span>-X</span></h1>
+<p>A digital Enigma machine and Morse messenger in one dark-themed desktop app. Configure rotors, rings, positions, reflectors and plugboard settings, then experiment with classic and extended cipher modes.</p>
+<section class="panel" aria-label="Download">
+<div class="file"><div><div class="filename">ENIGMA-X.pyw</div><div class="meta">Python desktop app · Windows-friendly .pyw file</div></div><div class="eyebrow">READY</div></div>
+<a class="download" href="./ENIGMA-X.pyw" download="ENIGMA-X.pyw">↓ DOWNLOAD ENIGMA-X</a>
+</section>
+<h2>Before you run it</h2>
+<ul>
+<li>Requires Python 3 and Tkinter (included with many standard Python installations).</li>
+<li>Download the file, then double-click it if .pyw files are associated with Python; otherwise run it with Python.</li>
+<li>The cipher features work locally. The messenger relay feature additionally requires a separately running <code>enigma_relay.py</code> server.</li>
+</ul>
+<div class="note">Historical Enigma ciphers are not secure by modern standards. Use ENIGMA-X for learning and experimentation, not to protect real secrets.</div>
+<footer>ENIGMA-X · BUILT FOR CURIOSITY</footer>
+</main>
+</body>
+</html>
