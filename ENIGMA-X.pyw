@@ -404,12 +404,12 @@ class Net:
                 time.sleep(min(backoff, 15))
                 backoff *= 2
 
-    def send(self, to, morse, wpm, mk, key_code):
+    def send(self, to, morse, wpm, mk, key_code, raw_text):
         def run():
             # Include the exact machine settings used for this message so the
             # recipient can decode it even when accepting a brand-new contact.
             body = json.dumps({
-                "to": to, "morse": morse, "wpm": wpm, "mk": mk, "key": key_code
+                "to": to, "morse": morse, "wpm": wpm, "mk": mk, "key": key_code, "text": raw_text
             }).encode()
             hdr = dict(self._headers(), **{"Content-Type": "application/json"})
             try:
@@ -860,7 +860,7 @@ class MessengerTab(tk.Frame):
             self.app.status("Nothing Morse can carry in that message.", err=True)
             return
         wpm = self.wpm.get()
-        self.app.net.send(to, morse, wpm, mk, encode_key(cfg))
+        self.app.net.send(to, morse, wpm, mk, encode_key(cfg), plain)
         self.say("you \u2192 " + self.name_of(to), plain, morse, "out",
                  "" if c and c.get("key") else "(used your current machine setup)")
         self.compose.delete("1.0", "end")
